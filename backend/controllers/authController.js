@@ -14,14 +14,20 @@ const generateToken = (id) => {
 // @route   POST /api/auth/register
 // @access  Public
 const registerUser = asyncHandler(async (req, res) => {
-  const { name, email, password, role } = req.body;  // Include role in request body
+  const { name, email, username, password, role } = req.body; // Include username in request body
+
+  // Validate required fields
+  if (!name || !email || !username || !password) {
+    res.status(400);
+    throw new Error('Please provide all required fields (name, email, username, password).');
+  }
 
   // Check if user exists
-  const userExists = await User.findOne({ email });
+  const userExists = await User.findOne({ $or: [{ email }, { username }] });
 
   if (userExists) {
     res.status(400);
-    throw new Error('User already exists');
+    throw new Error('User with this email or username already exists');
   }
 
   // Hash password
@@ -32,8 +38,9 @@ const registerUser = asyncHandler(async (req, res) => {
   const user = await User.create({
     name,
     email,
+    username, // Save the username in the user object
     password: hashedPassword,
-    role,  // Save the role in the user object
+    role, // Save the role in the user object
   });
 
   if (user) {
@@ -41,7 +48,8 @@ const registerUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      role: user.role,  // Include role in the response
+      username: user.username, // Include username in the response
+      role: user.role, // Include role in the response
       token: generateToken(user._id),
     });
   } else {
@@ -64,7 +72,8 @@ const loginUser = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      role: user.role,  // Ensure the role is included in the response
+      username: user.username, // Ensure the username is included in the response
+      role: user.role, // Ensure the role is included in the response
       token: generateToken(user._id),
     });
   } else {
@@ -84,7 +93,8 @@ const getUserProfile = asyncHandler(async (req, res) => {
       _id: user._id,
       name: user.name,
       email: user.email,
-      role: user.role,  // Include role in the response for consistency
+      username: user.username, // Include username in the response
+      role: user.role, // Include role in the response for consistency
     });
   } else {
     res.status(404);
