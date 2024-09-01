@@ -11,6 +11,11 @@ const userSchema = mongoose.Schema(
       required: true,
       unique: true,
     },
+    username: {
+      type: String,
+      required: true,
+      unique: true, // Ensure the username is unique to prevent duplicates
+    },
     password: {
       type: String,
       required: true,
