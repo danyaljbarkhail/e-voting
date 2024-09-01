@@ -1,4 +1,4 @@
-import API from './api'; // Import the configured Axios instance
+import API from './api';
 
 // Helper function to get the token from localStorage
 const getToken = () => localStorage.getItem('token');
@@ -19,24 +19,14 @@ export const isAdmin = () => {
   return role === 'admin';
 };
 
-// Register user with improved error handling
+// Register user
 export const register = async (name, email, password) => {
-  try {
-    const response = await API.post('/auth/register', { name, email, password });
-    return response.data;
-  } catch (error) {
-    console.error('Registration error:', error.response ? error.response.data : error.message);
-    throw error; // Re-throw the error for further handling in the calling code
-  }
+  const response = await API.post('/auth/register', { name, email, password });
+  return response.data;
 };
 
-// Login user with improved error handling
+// Login user
 export const login = async (email, password) => {
-  try {
-    const response = await API.post('/auth/login', { email, password });
-    return response.data;
-  } catch (error) {
-    console.error('Login error:', error.response ? error.response.data : error.message);
-    throw error; // Re-throw the error for further handling in the calling code
-  }
+  const response = await API.post('/auth/login', { email, password });
+  return response.data;
 };
