@@ -18,7 +18,7 @@ export const getResults = async () => {
     };
 
     // Make the API request to the correct endpoint
-    const response = await axios.get('http://localhost:5000/api/votes/results', config);
+    const response = await axios.get('https://e-voting-backend.onrender.com/api/votes/results', config);
 
     return response.data;
   } catch (error) {
